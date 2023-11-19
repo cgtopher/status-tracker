@@ -36,12 +36,12 @@ class TrackableService(
         this.cacheService.setTrackable(newTrackable)
 
         return TrackableDTO(
-            trackable.id,
-            trackable.status
+            newTrackable.id,
+            newTrackable.status
         )
     }
 
-    suspend fun getTrackable(trackableId: UUID): TrackableDTO {
+    fun getTrackable(trackableId: UUID): TrackableDTO {
         val trackable = this.cacheService.getTrackable(trackableId)
         return TrackableDTO(
             trackable.id,
