@@ -15,13 +15,13 @@ fun Application.trackController() {
             post("/tracks") {
                 val trackDTO = call.receive<TrackDTO>()
                 val trackIdentifierDTO = tracksService.createTrack(trackDTO)
-                call.respond(HttpStatusCode.Created, trackIdentifierDTO)
+                call.respond<TrackIdentifierDTO>(HttpStatusCode.Created, trackIdentifierDTO)
             }
 
             get("/tracks/{trackId}") {
                 val trackId = UUID.fromString(call.parameters["trackId"])
                 val trackDTO = tracksService.getTrackDTO(trackId)
-                call.respond(trackDTO)
+                call.respond<TrackDTO>(trackDTO)
             }
         }
     }

@@ -14,19 +14,19 @@ fun Application.trackableController() {
         post("/trackables") {
             val createTrackableDTO = call.receive<CreateTrackableDTO>()
             val trackable = trackableService.newTrackableById(createTrackableDTO)
-            call.respond(HttpStatusCode.Created, trackable)
+            call.respond<TrackableDTO>(HttpStatusCode.Created, trackable)
         }
 
         put("/trackables") {
             val updateTrackableDTO = call.receive<UpdateTrackableDTO>()
             val trackable = trackableService.updateTrackableStatus(updateTrackableDTO)
-            call.respond(trackable)
+            call.respond<TrackableDTO>(trackable)
         }
 
         get("/trackables/{trackableId}") {
             val trackableId = UUID.fromString(call.parameters["trackableId"])
             val trackable = trackableService.getTrackable(trackableId)
-            call.respond(trackable)
+            call.respond<TrackableDTO>(trackable)
         }
     }
 }

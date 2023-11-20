@@ -1,0 +1,102 @@
+openapi: "3.0.3"
+info:
+  title: "status_tracker API"
+  description: "status_tracker API"
+  version: "1.0.0"
+servers:
+- url: "https://status_tracker"
+paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Ok"
+  /trackables:
+    post:
+      description: ""
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/CreateTrackableDTO"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TrackableDTO"
+    put:
+      description: ""
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/UpdateTrackableDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TrackableDTO"
+  /trackables/{trackableId}:
+    get:
+      description: ""
+      parameters:
+      - name: "trackableId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TrackableDTO"
+components:
+  schemas:
+    CreateTrackableDTO:
+      type: "object"
+      properties:
+        trackId:
+          type: "string"
+          format: "uuid"
+    Status:
+      type: "object"
+      properties:
+        trackId:
+          type: "string"
+          format: "uuid"
+        current:
+          type: "string"
+        next:
+          type: "string"
+    TrackableDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        status:
+          $ref: "#/components/schemas/Status"
+    UpdateTrackableDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        status:
+          type: "string"

@@ -11,7 +11,7 @@ import kotlin.test.assertTrue
 class ErrorTrackBuilderTest {
 
     @Test
-    fun from_standardSet_shouldReturnErrorTrack() {
+    fun `from standard set should return ErrorTrack`() {
         val result = ErrorTrackBuilder.from(setOf("one", "two", "three"))
 
         assertTrue { result.instanceOf(ErrorTrack::class) }
@@ -21,7 +21,7 @@ class ErrorTrackBuilderTest {
     }
 
     @Test
-    fun builder_threeSteps_shouldReturnErrorTrack() {
+    fun `builder three steps should return ErrorTrack`() {
         val mainTrack = TrackBuilder.start().step("one")
 
         ErrorTrackBuilder(mainTrack).step("one").step("two").step("three").buildError()

@@ -12,13 +12,6 @@ import io.statustracker.config.DatabaseFactory
 import io.statustracker.trackable.trackableController
 import kotlinx.serialization.json.Json
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
-
-
-
 fun Application.module() {
     install(ContentNegotiation) {
         json(Json {
@@ -33,4 +26,9 @@ fun Application.module() {
     healthRoutes()
     trackController()
     trackableController()
+}
+
+fun main() {
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+        .start(wait = true)
 }

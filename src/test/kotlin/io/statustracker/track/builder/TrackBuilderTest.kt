@@ -8,7 +8,7 @@ import kotlin.test.*
 class TrackBuilderTest {
 
     @Test
-    fun from_standardSet_shouldReturnTrack() {
+    fun `from standard set should return Track`() {
         val result = TrackBuilder.from(setOf("one", "two", "three"))
 
         assertTrue { result.instanceOf(Track::class) }
@@ -18,12 +18,12 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun from_emptySet_shouldThrowTrackBuilderException() {
+    fun `from empty set should throw TrackBuilderException`() {
         assertFailsWith(TrackBuilderException::class) { TrackBuilder.from(setOf()) }
     }
 
     @Test
-    fun builder_threeSteps_shouldReturnTrack() {
+    fun `builder three steps should return Track`() {
         val result = TrackBuilder.start()
             .step("one")
             .step("two")
@@ -37,7 +37,7 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun builder_threeStepsAsSet_shouldReturnTrack() {
+    fun `builder three steps as set should return Track`() {
         val result = TrackBuilder.start().steps(setOf("one", "two", "three")).build()
 
         assertTrue { result.instanceOf(Track::class) }
@@ -47,7 +47,7 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun builder_threeStepsWithError_shouldReturnTrack() {
+    fun `builder three steps with error should return Track`() {
         val track = TrackBuilder.start()
             .step("one")
             .step("two")
@@ -64,7 +64,7 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun builder_Name_shouldReturnTrack() {
+    fun `builder name() should return Track`() {
         val name = "Test"
         val result = TrackBuilder.start()
             .name(name)
@@ -75,7 +75,7 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun builder_endTTL_shouldReturnTrack() {
+    fun `builder endTTL() should return Track`() {
         val endTTL = 1000
         val result = TrackBuilder.start()
             .endTTL(endTTL)
@@ -86,7 +86,7 @@ class TrackBuilderTest {
     }
 
     @Test
-    fun builder_deadTTL_shouldReturnTrack() {
+    fun `builder deadTTL should return Track`() {
         val deadTTL = 1000
         val result = TrackBuilder.start()
             .deadTTL(deadTTL)

@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "8544badc-2eab-4a0c-b2c0-76e1f69b97ca",
+		"name": "status tracker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30802206"
+	},
+	"item": [
+		{
+			"name": "Create Track",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/scruff/Documents/test.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/csv",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"csv"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Track",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/tracks/e1d8e60d-726c-4905-8f19-edabccb20529",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tracks",
+						"e1d8e60d-726c-4905-8f19-edabccb20529"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Trackable",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"trackId\": \"fb9aabb3-f8d5-4e78-b8cc-1a389f51cf39\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/trackables",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trackables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Trackable",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/trackables/51b539ff-ddb8-48f3-9142-65e574920a42",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trackables",
+						"51b539ff-ddb8-48f3-9142-65e574920a42"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Trackable",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"51b539ff-ddb8-48f3-9142-65e574920a42\",\n    \"status\": \"secondStatus\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/trackables",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trackables"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
