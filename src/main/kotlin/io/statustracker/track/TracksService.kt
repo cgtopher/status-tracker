@@ -69,14 +69,14 @@ class TracksService(
         val track = this.getTrackById(trackId)
         return TrackDTO(
             track.name,
+            track.startStatus.toList(),
             track.endTTl,
             track.deadTTL,
-            track.startStatus.toList(),
             track.errorTrack?.let { ErrorTrackDTO(
                 it.name,
+                it.startStatus.toList(),
                 it.endTTl,
-                it.deadTTL,
-                it.startStatus.toList()
+                it.deadTTL
             ) }
         )
     }

@@ -1,16 +1,13 @@
 package io.statustracker.trackable
 
 import io.ktor.util.reflect.*
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
+import io.mockk.*
 import io.statustracker.track.Track
 import io.statustracker.track.TracksService
 import io.statustracker.trackable.repository.TrackableRepository
 import io.statustracker.trackable.status.Status
 import io.statustracker.trackable.status.StatusService
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,13 +15,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class TrackableServiceTests {
-    private val mockTrackableRepository = mockk<TrackableRepository>()
-    private val mockCacheService = mockk<CacheService>()
-    private val mockStatusService = mockk<StatusService>()
-    private val mockTracksService = mockk<TracksService>()
-
-    private val service = TrackableService(mockTrackableRepository, mockCacheService, mockStatusService, mockTracksService)
-
     private val validTrackId = UUID.randomUUID()
     private val trackableId = UUID.randomUUID()
     private val invalidTrackableId = UUID.randomUUID()
@@ -35,16 +25,26 @@ class TrackableServiceTests {
 
     private val singleStatus = Status(UUID.randomUUID(), firstStatusName)
     private val doubleStatus = Status(validTrackId, firstStatusName, secondStatusName)
-
-    @Before
-    fun setup() {
-        coEvery { mockTracksService.getTrackById(validTrackId) } returns Track(io.statustracker.track.status.Status(trackableName), "name")
-        coEvery { mockTrackableRepository.log(any()) } returns Unit
-        coEvery { mockCacheService.setTrackable(any()) } returns Unit
-        coEvery { mockStatusService.getStatus(any(), any()) } returns singleStatus
-        coEvery { mockCacheService.getTrackable(trackableId) } returns Trackable(trackableId, doubleStatus, 100, 100)
-        coEvery { mockCacheService.getTrackable(invalidTrackableId) } returns Trackable(trackableId, singleStatus, 100, 100)
+    private val mockTrackableRepository = mockk<TrackableRepository>() {
+        coEvery { log(any()) } returns Unit
     }
+
+    private val mockCacheService = mockk<CacheService>() {
+        every { setTrackable(any()) } returns Unit
+        every { getTrackable(trackableId) } returns Trackable(trackableId, doubleStatus, 100, 100)
+        every { getTrackable(invalidTrackableId) } returns Trackable(trackableId, singleStatus, 100, 100)
+    }
+
+    private val mockStatusService = mockk<StatusService>() {
+        coEvery { getStatus(any(), any()) } returns singleStatus
+    }
+
+    private val mockTracksService = mockk<TracksService>() {
+        coEvery { getTrackById(validTrackId) } returns Track(io.statustracker.track.status.Status(trackableName), "name")
+    }
+
+    private val service = TrackableService(mockTrackableRepository, mockCacheService, mockStatusService, mockTracksService)
+
 
     @Test
     fun `newTrackableById valid track id should return TrackDTO`() = runBlocking{
@@ -53,10 +53,12 @@ class TrackableServiceTests {
 
         assertTrue { result.instanceOf(TrackableDTO::class) }
         assertTrue { result.status.current.equals(firstStatusName) }
-        coVerify { mockTracksService.getTrackById(validTrackId) }
-        coVerify { mockStatusService.getStatus(trackableName, validTrackId) }
-        coVerify { mockTrackableRepository.log(any()) }
-        coVerify { mockCacheService.setTrackable(any()) }
+        coVerifyAll {
+            mockTracksService.getTrackById(validTrackId)
+            mockStatusService.getStatus(trackableName, validTrackId)
+            mockTrackableRepository.log(any())
+            mockCacheService.setTrackable(any())
+        }
     }
 
 

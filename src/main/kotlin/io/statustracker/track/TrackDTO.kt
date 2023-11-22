@@ -7,18 +7,18 @@ import java.util.UUID
 @Serializable
 data class TrackDTO(
     val name: String,
+    val statuses: List<String>,
     val endTTL: Int? = null,
     val deadTTL: Int? = null,
-    val statuses: List<String>,
-    val errorTrack: ErrorTrackDTO?
+    val errorTrack: ErrorTrackDTO? = null
 )
 
 @Serializable
 data class ErrorTrackDTO(
     val name: String,
+    val statuses: List<String>,
     val endTTL: Int? = null,
     val deadTTL: Int? = null,
-    val statuses: List<String>,
 )
 
 @Serializable
