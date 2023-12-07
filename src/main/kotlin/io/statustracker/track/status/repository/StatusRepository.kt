@@ -1,9 +1,9 @@
 package io.statustracker.track.status.repository
 
 import io.statustracker.config.DatabaseFactory
-import io.statustracker.config.NotFoundException
 import io.statustracker.config.tables.StatusTable
 import io.statustracker.track.status.Status
+import io.statustracker.track.status.StatusNotFoundException
 import io.statustracker.track.status.buildStatusStack
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -49,7 +49,7 @@ class StatusRepository() {
             }
 
             if(statusDAOs.isEmpty()) {
-                throw NotFoundException("Malconfigured track, no statuses found")
+                throw StatusNotFoundException("Mal-configured track, no statuses found")
             }
 
             return@dbQuery statusDAOs

@@ -82,7 +82,7 @@ class TrackBuilderTest {
             .step("one")
             .build()
 
-        assertEquals(result.endTTl, endTTL)
+        assertEquals(result.endTtl, endTTL)
     }
 
     @Test
@@ -93,6 +93,6 @@ class TrackBuilderTest {
             .step("one")
             .build()
 
-        assertEquals(result.deadTTL, deadTTL)
+        assertEquals(result.deadTtl, deadTTL)
     }
 }

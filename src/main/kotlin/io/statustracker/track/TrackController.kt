@@ -5,13 +5,14 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.statustracker.config.ExceptionDTO
+import io.statustracker.ExceptionDTO
 import io.statustracker.track.builder.TrackBuilderException
 import java.util.*
 
-private val tracksService = TracksService()
 
 fun Application.trackController() {
+    val tracksService = TracksService()
+
     routing {
         accept(ContentType.Any) {
             post("/tracks") {
@@ -22,20 +23,32 @@ fun Application.trackController() {
                 } catch (e: TrackBuilderException) {
                     call.respond(
                         HttpStatusCode.BadRequest,
-                        ExceptionDTO("Invalid track request: ${e.message}", HttpStatusCode.BadRequest)
+                        ExceptionDTO(e.message ?: "Invalid Track Request", HttpStatusCode.BadRequest)
                     )
                 } catch (e: Exception) {
                     call.respond(
                         HttpStatusCode.InternalServerError,
-                        ExceptionDTO("Server error: ${e.message}", HttpStatusCode.InternalServerError)
+                        ExceptionDTO(e.message ?: "Internal Server Error", HttpStatusCode.InternalServerError)
                     )
                 }
             }
 
             get("/tracks/{trackId}") {
-                val trackId = UUID.fromString(call.parameters["trackId"])
-                val trackDTO = tracksService.getTrackDTO(trackId)
-                call.respond<TrackDTO>(trackDTO)
+                try {
+                    val trackId = UUID.fromString(call.parameters["trackId"])
+                    val track = tracksService.getTrack(trackId)
+                    call.respond<TrackDTO>(track.toDto())
+                } catch (e: TrackNotFoundException) {
+                    call.respond<ExceptionDTO>(
+                        HttpStatusCode.NotFound,
+                        ExceptionDTO(e.message ?: "Internal Server Error", HttpStatusCode.InternalServerError)
+                    )
+                } catch (e: Exception) {
+                    call.respond<ExceptionDTO>(
+                        HttpStatusCode.InternalServerError,
+                        ExceptionDTO(e.message ?: "Internal Server Error", HttpStatusCode.InternalServerError)
+                    )
+                }
             }
         }
     }

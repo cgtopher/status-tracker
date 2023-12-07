@@ -12,12 +12,11 @@ class StatusService {
 
     suspend fun getStatusesForTrack(trackId: UUID): Status {
         val statusDAOs = this.statusRepository.getStatuses(trackId)
-        val endStatus = statusDAOs
-                .find { it.next == null }
-        var statusHead: Status = endStatus
+        var statusHead: Status = statusDAOs
+            .find { it.next == null }
             ?.let { Status(it.name) }
             ?: throw StatusException("Malformed statuses, no end status found")
-        var name = endStatus.name
+        var name = statusHead.name
 
         val lookup: MutableMap<String?, String> = statusDAOs.filter { it.next != null }.associate { it.next to it.name }.toMutableMap()
         while (lookup.isNotEmpty()) {

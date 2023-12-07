@@ -9,23 +9,23 @@ const val DEFAULT_ERROR_TRACK_STATUS = "ERROR"
 open class TrackBase(
     open val startStatus: Status,
     open val name: String,
-    open val endTTl: Int,
-    open val deadTTL: Int
+    open val endTtl: Int,
+    open val deadTtl: Int
 )
 
 data class Track(
     override val startStatus: Status,
     override val name: String = DEFAULT_NAME,
     val errorTrack: ErrorTrack? = null,
-    override val endTTl: Int = DEFAULT_TTL,
-    override val deadTTL: Int = DEFAULT_TTL,
-) : TrackBase(startStatus, name, endTTl, deadTTL)
+    override val endTtl: Int = DEFAULT_TTL,
+    override val deadTtl: Int = DEFAULT_TTL,
+) : TrackBase(startStatus, name, endTtl, deadTtl)
 
 data class ErrorTrack(
     override val startStatus: Status,
     override val name: String = DEFAULT_NAME,
-    override val endTTl: Int = DEFAULT_TTL,
-    override val deadTTL: Int = DEFAULT_TTL
-) : TrackBase(startStatus, name, endTTl, deadTTL = deadTTL)
+    override val endTtl: Int = DEFAULT_TTL,
+    override val deadTtl: Int = DEFAULT_TTL
+) : TrackBase(startStatus, name, endTtl, deadTtl = deadTtl)
 
 

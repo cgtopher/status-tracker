@@ -12,13 +12,3 @@ fun buildStatusStack(status: Status): Stack<String> {
 
     return statusStack
 }
-
-fun Status.toList(): List<String> {
-    val statuses = mutableListOf<String>()
-    var curStatus: Status? = this
-    while (curStatus != null) {
-        statuses.add(curStatus.name)
-        curStatus = curStatus.next
-    }
-    return statuses
-}

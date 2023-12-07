@@ -1,5 +1,6 @@
 package io.statustracker.config
 
+import io.statustracker.ApplicationException
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 
@@ -9,7 +10,7 @@ object CacheFactory {
         this.jedisPool = JedisPool("localhost", 6379)
     }
 
-    fun clent(): Jedis {
+    fun client(): Jedis {
         return try {
             this.jedisPool.resource
         } catch (e: Exception) {
