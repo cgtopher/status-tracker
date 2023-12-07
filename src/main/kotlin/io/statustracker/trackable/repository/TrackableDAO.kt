@@ -1,6 +1,6 @@
 package io.statustracker.trackable.repository
 
-import io.statustracker.config.tables.TrackableTable
+import io.statustracker.config.tables.TrackableLogTable
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
@@ -13,9 +13,9 @@ data class TrackableDAO(
     companion object {
         fun fromResultRow(row: ResultRow): TrackableDAO {
             return TrackableDAO(
-                row[TrackableTable.id],
-                row[TrackableTable.latestStatus],
-                row[TrackableTable.track]
+                row[TrackableLogTable.id],
+                row[TrackableLogTable.latestStatus],
+                row[TrackableLogTable.trackable]
             )
         }
     }

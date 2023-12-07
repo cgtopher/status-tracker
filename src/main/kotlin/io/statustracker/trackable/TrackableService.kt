@@ -11,41 +11,37 @@ class TrackableService(
     private val statusService: StatusService = StatusService(),
     private val tracksService: TracksService = TracksService()
 ) {
+    fun getTrackable(trackableId: UUID): Trackable = cacheService.getTrackable(trackableId)
 
     suspend fun newTrackableById(createTrackableDTO: CreateTrackableDTO): TrackableDTO {
-        val track = this.tracksService.getTrackById(createTrackableDTO.trackId)
+        val track = this.tracksService.getTrack(createTrackableDTO.trackId)
         val initialStatus = statusService.getStatus(track.startStatus.name, createTrackableDTO.trackId)
-        val trackable = Trackable(UUID.randomUUID(), initialStatus, track.deadTTL, track.endTTl)
-        this.trackableRepository.log(trackable)
-        this.cacheService.setTrackable(trackable)
 
-        return TrackableDTO(
-            trackable.id,
-            trackable.status
-        )
+        return saveTrackable(
+            Trackable(initialStatus, track)
+        ).toDto()
     }
 
     suspend fun updateTrackableStatus(updateTrackableDTO: UpdateTrackableDTO): TrackableDTO {
-        val trackable = this.cacheService.getTrackable(updateTrackableDTO.id)
+        val trackable = getTrackable(updateTrackableDTO.id)
         if(trackable.status.next != updateTrackableDTO.status) {
-            throw TrackableTransitionException("Invalid transition to status ${updateTrackableDTO.status}")
+            throw TrackableException("Invalid transition to status ${updateTrackableDTO.status}")
         }
         val newStatus = this.statusService.getStatus(updateTrackableDTO.status, trackable.status.trackId)
-        val newTrackable = Trackable(trackable.id, newStatus, trackable.deadTTL, trackable.endTTL)
-        this.trackableRepository.log(newTrackable)
-        this.cacheService.setTrackable(newTrackable)
 
-        return TrackableDTO(
-            newTrackable.id,
-            newTrackable.status
-        )
+        return saveTrackable(
+            Trackable(
+                trackable.id,
+                trackable.track,
+                newStatus,
+                trackable.deadTTL,
+                trackable.endTTL)
+        ).toDto()
     }
 
-    fun getTrackable(trackableId: UUID): TrackableDTO {
-        val trackable = this.cacheService.getTrackable(trackableId)
-        return TrackableDTO(
-            trackable.id,
-            trackable.status
-        )
+    private suspend fun saveTrackable(trackable: Trackable): Trackable {
+        this.trackableRepository.log(trackable)
+        this.cacheService.setTrackable(trackable)
+        return trackable
     }
 }

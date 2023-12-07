@@ -9,23 +9,32 @@ const val TRACKABLE_NAMESPACE = "trackable"
 
 class CacheService {
     fun setTrackable(trackable: Trackable) {
-        CacheFactory.clent().use { client ->
-            val serializedStatus = Json.encodeToString(Trackable.serializer(), trackable)
-            val ttl = if(trackable.status.next == null) {
-                trackable.endTTL
-            } else {
-                trackable.deadTTL
-            }
+        CacheFactory.client().use { client ->
+            try {
+                val serializedStatus = Json.encodeToString(Trackable.serializer(), trackable)
+                val ttl = if(trackable.status.next == null) {
+                    trackable.endTTL
+                } else {
+                    trackable.deadTTL
+                }
 
-            client.set("${TRACKABLE_NAMESPACE}:${trackable.id}", serializedStatus, SetParams.setParams().ex(ttl.toLong()))
+                client.set("${TRACKABLE_NAMESPACE}:${trackable.id}", serializedStatus, SetParams.setParams().ex(ttl.toLong()))
+            } catch (e: Exception) {
+                throw TrackableException("Problem caching trackable", e)
+            }
         }
     }
 
     fun getTrackable(trackableId: UUID): Trackable {
-        CacheFactory.clent().use { client ->
-            val serializedTrackable = client.get("${TRACKABLE_NAMESPACE}:${trackableId}")
-            client.disconnect()
-            return Json.decodeFromString(serializedTrackable)
+        try {
+            CacheFactory.client().use { client ->
+                val serializedTrackable = client.get("${TRACKABLE_NAMESPACE}:${trackableId}")
+                return Json.decodeFromString(serializedTrackable)
+            }
+        } catch (e: IllegalStateException) {
+            throw TrackableNotFoundException("Unable to find trackable with id: $trackableId", e)
+        } catch (e: Exception) {
+            throw TrackableException("Problem fetching trackable with id: $trackableId", e)
         }
     }
 }

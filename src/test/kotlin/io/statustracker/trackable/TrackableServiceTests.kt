@@ -19,6 +19,7 @@ class TrackableServiceTests {
     private val trackableId = UUID.randomUUID()
     private val invalidTrackableId = UUID.randomUUID()
 
+    private val trackName = "TestTrack"
     private val trackableName = "foo"
     private val firstStatusName = "bar"
     private val secondStatusName = "baz"
@@ -31,8 +32,8 @@ class TrackableServiceTests {
 
     private val mockCacheService = mockk<CacheService>() {
         every { setTrackable(any()) } returns Unit
-        every { getTrackable(trackableId) } returns Trackable(trackableId, doubleStatus, 100, 100)
-        every { getTrackable(invalidTrackableId) } returns Trackable(trackableId, singleStatus, 100, 100)
+        every { getTrackable(trackableId) } returns Trackable(trackableId, trackName, doubleStatus, 100, 100)
+        every { getTrackable(invalidTrackableId) } returns Trackable(trackableId, trackName, singleStatus, 100, 100)
     }
 
     private val mockStatusService = mockk<StatusService>() {
@@ -40,7 +41,7 @@ class TrackableServiceTests {
     }
 
     private val mockTracksService = mockk<TracksService>() {
-        coEvery { getTrackById(validTrackId) } returns Track(io.statustracker.track.status.Status(trackableName), "name")
+        coEvery { getTrack(validTrackId) } returns Track(io.statustracker.track.status.Status(trackableName), "name")
     }
 
     private val service = TrackableService(mockTrackableRepository, mockCacheService, mockStatusService, mockTracksService)
@@ -54,7 +55,7 @@ class TrackableServiceTests {
         assertTrue { result.instanceOf(TrackableDTO::class) }
         assertTrue { result.status.current.equals(firstStatusName) }
         coVerifyAll {
-            mockTracksService.getTrackById(validTrackId)
+            mockTracksService.getTrack(validTrackId)
             mockStatusService.getStatus(trackableName, validTrackId)
             mockTrackableRepository.log(any())
             mockCacheService.setTrackable(any())
@@ -76,14 +77,14 @@ class TrackableServiceTests {
 
     @Test
     fun `updateTrackableStatus invalid status should throw TrackableTransitionException`(): Unit = runBlocking {
-        assertFailsWith(TrackableTransitionException::class) {
+        assertFailsWith(TrackableException::class) {
             service.updateTrackableStatus(UpdateTrackableDTO(trackableId, "invalid_status"))
         }
     }
 
     @Test
     fun `updateTrackableStatus attempting transition at end of track should throw TrackableTransitionException`(): Unit = runBlocking {
-        assertFailsWith(TrackableTransitionException::class) {
+        assertFailsWith(TrackableException::class) {
             service.updateTrackableStatus(UpdateTrackableDTO(invalidTrackableId, doubleStatus.next!!))
         }
     }
@@ -92,7 +93,7 @@ class TrackableServiceTests {
     fun `getTrackable should return TrackableDTO`() = runBlocking {
         val result = service.getTrackable(trackableId)
 
-        assertTrue { result.instanceOf(TrackableDTO::class) }
+        assertTrue { result.instanceOf(Trackable::class) }
         assertEquals(trackableId, result.id)
         assertEquals(doubleStatus.current, result.status.current)
         assertEquals(doubleStatus.next, result.status.next)

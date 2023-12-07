@@ -11,3 +11,5 @@ data class TrackableDTO(
     val id: UUID,
     val status: Status
 )
+
+fun Trackable.toDto() = TrackableDTO(id, status)

@@ -32,6 +32,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
     implementation("io.ktor:ktor-server-content-negotiation:0.41.1")
     implementation("org.postgresql:postgresql:42.6.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
