@@ -26,6 +26,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("redis.clients:jedis:5.0.2")
+    implementation("org.testcontainers:testcontainers:1.19.3")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:0.41.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")

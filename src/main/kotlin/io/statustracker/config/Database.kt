@@ -8,11 +8,9 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
-    //@todo: remove creds obviously
-    fun init() {
+    fun init(url: String, username: String, password: String) {
         val driverClassName = "org.postgresql.Driver"
-        val jdbcURL = "jdbc:postgresql://127.0.0.1:5432/statustracker"
-        val database = Database.connect(jdbcURL, driverClassName, "postgres", "postgres")
+        val database = Database.connect(url, driverClassName, username, password)
         //@todo Do with actual migration system, like liquibase
         transaction(database) {
             DATABASE_TABLES.forEach { SchemaUtils.create(it) }

@@ -6,8 +6,8 @@ import redis.clients.jedis.JedisPool
 
 object CacheFactory {
     private lateinit var jedisPool: JedisPool
-    fun init() {
-        this.jedisPool = JedisPool("localhost", 6379)
+    fun init(host: String, port: Int) {
+        this.jedisPool = JedisPool(host, port)
     }
 
     fun client(): Jedis {
