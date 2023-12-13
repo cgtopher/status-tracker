@@ -15,7 +15,7 @@ fun Application.trackableController() {
         post("/trackables") {
             try {
                 val createTrackableDTO = call.receive<CreateTrackableDTO>()
-                val trackable = trackableService.newTrackableById(createTrackableDTO)
+                val trackable = trackableService.createTrackable(createTrackableDTO)
                 call.respond<TrackableDTO>(HttpStatusCode.Created, trackable)
             } catch (e: TrackableException) {
                 call.respond<ExceptionDTO>(
@@ -36,10 +36,11 @@ fun Application.trackableController() {
             }
         }
 
-        put("/trackables") {
+        post("/trackables/{id}") {
             try {
+                val id = UUID.fromString(call.parameters["id"] ?: throw Exception("Missing id"))
                 val updateTrackableDTO = call.receive<UpdateTrackableDTO>()
-                val trackable = trackableService.updateTrackableStatus(updateTrackableDTO)
+                val trackable = trackableService.updateTrackableStatus(id, updateTrackableDTO)
                 call.respond<TrackableDTO>(trackable)
             } catch (e: TrackableNotFoundException) {
                 call.respond<ExceptionDTO>(

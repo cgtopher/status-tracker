@@ -22,8 +22,8 @@ class TrackableService(
         ).toDto()
     }
 
-    suspend fun updateTrackableStatus(updateTrackableDTO: UpdateTrackableDTO): TrackableDTO {
-        val trackable = getTrackable(updateTrackableDTO.id)
+    suspend fun updateTrackableStatus(id: UUID, updateTrackableDTO: UpdateTrackableDTO): TrackableDTO {
+        val trackable = getTrackable(id)
         if(trackable.status.next != updateTrackableDTO.status) {
             throw TrackableException("Invalid transition to status ${updateTrackableDTO.status}")
         }
