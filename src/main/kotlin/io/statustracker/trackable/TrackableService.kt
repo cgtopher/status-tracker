@@ -13,7 +13,7 @@ class TrackableService(
 ) {
     fun getTrackable(trackableId: UUID): Trackable = cacheService.getTrackable(trackableId)
 
-    suspend fun newTrackableById(createTrackableDTO: CreateTrackableDTO): TrackableDTO {
+    suspend fun createTrackable(createTrackableDTO: CreateTrackableDTO): TrackableDTO {
         val track = this.tracksService.getTrack(createTrackableDTO.trackId)
         val initialStatus = statusService.getStatus(track.startStatus.name, createTrackableDTO.trackId)
 
