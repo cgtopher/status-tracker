@@ -15,7 +15,7 @@ data class TrackableDAO(
             return TrackableDAO(
                 row[TrackableLogTable.id],
                 row[TrackableLogTable.latestStatus],
-                row[TrackableLogTable.trackable]
+                row[TrackableLogTable.trackableId]
             )
         }
     }

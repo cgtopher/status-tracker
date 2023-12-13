@@ -8,28 +8,29 @@ import io.statustracker.trackable.Trackable
 import io.statustracker.trackable.TrackableConfigurationException
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import java.util.*
 
 class TrackableRepository {
     suspend fun log(trackable: Trackable) {
         DatabaseFactory.dbQuery {
             val trackableReference = TrackableTable.select { TrackableTable.id.eq(trackable.id) }.singleOrNull()
 
-            if(trackableReference != null) {
+            if(trackableReference == null) {
                 val trackRow = TrackTable.select { TrackTable.name.eq(trackable.track) }.singleOrNull()
                 if(trackRow == null) {
                     throw TrackableConfigurationException("Track ${trackable.track} not found, unable to log interaction")
                 }
                 TrackableTable.insert {
                     it[id] = trackable.id
-                    it[trackId] = trackRow[id]
+                    it[trackId] = trackRow[TrackTable.id]
                 }
             }
 
 
             TrackableLogTable.insert {
-                it[id] = trackable.id
+                it[id] = UUID.randomUUID()
                 it[latestStatus] = trackable.status.current
-                it[this.trackable] = trackable.status.trackId
+                it[trackableId] = trackable.id
             }
         }
     }
