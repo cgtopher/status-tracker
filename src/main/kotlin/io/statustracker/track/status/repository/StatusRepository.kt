@@ -17,9 +17,10 @@ class StatusRepository() {
         val statusStack = buildStatusStack(status)
         this.logger.debug("Initial status stack size: {}", statusStack.size)
 
-        val firstStatus = DatabaseFactory.dbQuery {
-            // Ensure that we have at least one status
-            var statusDAO = StatusDAO(UUID.randomUUID(), statusStack.peek(), null)
+        // Ensure that we have at least one status before opening transaction
+        var statusDAO = StatusDAO(UUID.randomUUID(), statusStack.peek(), null)
+
+        DatabaseFactory.dbQuery {
             do {
                 statusStack.pop()
                 this.logger.info("Saving status: {}", statusDAO.name)
@@ -35,11 +36,9 @@ class StatusRepository() {
                     this.logger.debug("Status stack size: {}", statusStack.size)
                 }
             } while (!statusStack.isEmpty())
-
-            return@dbQuery statusDAO
         }
 
-        return firstStatus
+        return statusDAO
     }
 
     suspend fun getStatuses(trackId: UUID): List<StatusDAO> {
