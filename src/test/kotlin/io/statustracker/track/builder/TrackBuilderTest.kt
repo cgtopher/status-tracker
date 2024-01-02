@@ -12,9 +12,9 @@ class TrackBuilderTest {
         val result = TrackBuilder.from(setOf("one", "two", "three"))
 
         assertTrue { result.instanceOf(Track::class) }
-        assertEquals(result.startStatus.name, "one")
-        assertEquals(result.startStatus.next?.name, "two")
-        assertEquals(result.startStatus.next?.next?.name, "three")
+        assertEquals("one", result.startStatus.name)
+        assertEquals("two", result.startStatus.next?.name)
+        assertEquals("three", result.startStatus.next?.next?.name)
     }
 
     @Test
@@ -31,37 +31,21 @@ class TrackBuilderTest {
             .build()
 
         assertTrue { result.instanceOf(Track::class) }
-        assertEquals(result.startStatus.name, "one")
-        assertEquals(result.startStatus.next?.name, "two")
-        assertEquals(result.startStatus.next?.next?.name, "three")
+        assertEquals("one", result.startStatus.name)
+        assertEquals("two", result.startStatus.next?.name)
+        assertEquals("three", result.startStatus.next?.next?.name)
     }
 
     @Test
     fun `builder three steps as set should return Track`() {
-        val result = TrackBuilder.start().steps(setOf("one", "two", "three")).build()
+        val result = TrackBuilder.start().step(setOf("one", "two", "three")).build()
 
         assertTrue { result.instanceOf(Track::class) }
-        assertEquals(result.startStatus.name, "one")
-        assertEquals(result.startStatus.next?.name, "two")
-        assertEquals(result.startStatus.next?.next?.name, "three")
+        assertEquals("one", result.startStatus.name)
+        assertEquals("two", result.startStatus.next?.name)
+        assertEquals("three", result.startStatus.next?.next?.name)
     }
 
-    @Test
-    fun `builder three steps with error should return Track`() {
-        val track = TrackBuilder.start()
-            .step("one")
-            .step("two")
-            .step("three")
-            .onError()
-                .step("one")
-                .buildError()
-            .build()
-
-        val result = track.errorTrack
-
-        assertNotNull(result)
-        assertEquals(result.startStatus.name, "one")
-    }
 
     @Test
     fun `builder name() should return Track`() {

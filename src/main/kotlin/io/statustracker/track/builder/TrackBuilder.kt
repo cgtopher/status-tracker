@@ -2,11 +2,14 @@ package io.statustracker.track.builder
 
 import io.statustracker.track.DEFAULT_NAME
 import io.statustracker.track.DEFAULT_TTL
-import io.statustracker.track.ErrorTrack
 import io.statustracker.track.Track
 
-class TrackBuilder : TrackBuilderBase<TrackBuilder>() {
-    private var errorTrack: ErrorTrack? = null
+class TrackBuilder {
+    private var startStatus: BuilderStatus? = null
+    private var cur: BuilderStatus? = null
+    private var name: String? = null
+    private var endTTL: Int? = null
+    private var deadTTL: Int? = null
 
     companion object {
         // Builds from string array of status names with defaults set
@@ -20,36 +23,42 @@ class TrackBuilder : TrackBuilderBase<TrackBuilder>() {
 
     fun build(): Track {
         return this.startStatus?.let {
-            Track(it.toStatus(), this.name ?: DEFAULT_NAME, this.errorTrack, this.endTTL ?: DEFAULT_TTL, this.deadTTL ?: DEFAULT_TTL)
+            Track(it.toStatus(), this.name ?: DEFAULT_NAME, this.endTTL ?: DEFAULT_TTL, this.deadTTL ?: DEFAULT_TTL)
         } ?: throw TrackBuilderException("Tracks must have at least one status")
     }
 
-    fun onError() = ErrorTrackBuilder(this)
-    fun errorTrack(errorTrack: ErrorTrack) {
-        this.errorTrack = errorTrack
-    }
-
-    override fun step(status: String): TrackBuilder {
+    fun step(status: String): TrackBuilder {
         this.addStep(status)
         return this
     }
 
-    override fun steps(statuses: Set<String>): TrackBuilder {
-        this.addSteps(statuses)
+    fun step(statuses: Set<String>): TrackBuilder {
+        statuses.forEach { this.addStep(it) }
         return this
     }
 
-    override fun name(name: String): TrackBuilder {
+    private fun addStep(status: String) {
+        val newStatus = BuilderStatus(status)
+        if(startStatus == null) {
+            this.startStatus = newStatus
+        } else {
+            this.cur?.next = newStatus
+        }
+
+        this.cur = newStatus
+    }
+
+    fun name(name: String): TrackBuilder {
         this.name = name
         return this
     }
 
-    override fun deadTTL(deadTTL: Int?): TrackBuilder {
+    fun deadTTL(deadTTL: Int?): TrackBuilder {
         this.deadTTL = deadTTL
         return this
     }
 
-    override fun endTTL(endTTL: Int?): TrackBuilder {
+    fun endTTL(endTTL: Int?): TrackBuilder {
         this.endTTL = endTTL
         return this
     }
