@@ -19,21 +19,13 @@ class TrackServiceTests {
         UUID.randomUUID(),
         "Error Track",
         100,
-        100,
-        null
+        100
     )
     private val trackDAO = TrackDAO(
         UUID.randomUUID(),
         "Track",
         100,
-        100,
-        errorTrackDAO.id
-    )
-
-    private val errorTrack = ErrorTrack(
-        Status("errorOne", Status("errorTwo", Status("errorThree"))),
-        errorTrackDAO.name
-
+        100
     )
 
     private val track = Track(
@@ -43,8 +35,7 @@ class TrackServiceTests {
     )
 
     private val mockTrackRepository = mockk<TrackRepository>() {
-        coEvery { createTrack(any(), errorTrackDAO.id) } returns trackDAO
-        coEvery { createErrorTrack(any()) } returns errorTrackDAO
+        coEvery { create(any()) } returns trackDAO
     }
     private val mockStatusService = mockk<StatusService>() {
         coEvery { saveStatus(any(), any()) } returns Unit
@@ -62,9 +53,7 @@ class TrackServiceTests {
         assertEquals(result.id, trackDAO.id)
 
         coVerifyAll {
-            mockTrackRepository.createTrack(any(), errorTrackDAO.id)
-            mockTrackRepository.createErrorTrack(any())
-            mockStatusService.saveStatus(any(), errorTrackDAO.id)
+            mockTrackRepository.create(any())
             mockStatusService.saveStatus(any(), trackDAO.id)
         }
     }
@@ -75,13 +64,7 @@ class TrackServiceTests {
             trackDAO.name,
             listOf("one", "two", "three"),
             100,
-            100,
-            ErrorTrackDTO(
-                errorTrackDAO.name,
-                listOf("one", "two", "three"),
-                100,
-                100
-            )
+            100
         )
 
         val result = service.createTrack(trackDTO)
@@ -90,9 +73,7 @@ class TrackServiceTests {
         assertEquals(result.id, trackDAO.id)
 
         coVerifyAll {
-            mockTrackRepository.createTrack(any(), errorTrackDAO.id)
-            mockTrackRepository.createErrorTrack(any())
-            mockStatusService.saveStatus(any(), errorTrackDAO.id)
+            mockTrackRepository.create(any())
             mockStatusService.saveStatus(any(), trackDAO.id)
         }
     }

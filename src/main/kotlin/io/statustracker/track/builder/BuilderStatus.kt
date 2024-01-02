@@ -2,9 +2,9 @@ package io.statustracker.track.builder
 
 import io.statustracker.track.status.Status
 
-class StatusDefinition(
+class BuilderStatus(
     val name: String,
-    var next: StatusDefinition? = null
+    var next: BuilderStatus? = null
 ) {
     fun toStatus(): Status = Status(this.name, this.next?.toStatus())
 }
