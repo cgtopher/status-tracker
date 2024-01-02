@@ -9,8 +9,7 @@ data class TrackDAO(
     val id: UUID,
     val name: String,
     val endTTL: Int,
-    val deadTTL: Int,
-    val errorTrackId: UUID?
+    val deadTTL: Int
 ) {
     companion object {
         fun fromResultRow(row: ResultRow) =
@@ -18,8 +17,7 @@ data class TrackDAO(
                 row[TrackTable.id],
                 row[TrackTable.name],
                 row[TrackTable.endTTL],
-                row[TrackTable.deadTTL],
-                row[TrackTable.errorTrack]
+                row[TrackTable.deadTTL]
             )
     }
 }
