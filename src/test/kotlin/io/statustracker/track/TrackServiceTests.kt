@@ -6,7 +6,6 @@ import io.mockk.coVerifyAll
 import io.mockk.mockk
 import io.statustracker.track.repository.TrackDAO
 import io.statustracker.track.repository.TrackRepository
-import io.statustracker.track.status.Status
 import io.statustracker.track.status.StatusService
 import kotlinx.coroutines.runBlocking
 import java.util.*
@@ -15,23 +14,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class TrackServiceTests {
-    private val errorTrackDAO = TrackDAO(
-        UUID.randomUUID(),
-        "Error Track",
-        100,
-        100
-    )
     private val trackDAO = TrackDAO(
         UUID.randomUUID(),
         "Track",
         100,
         100
-    )
-
-    private val track = Track(
-        Status("one", Status("two", Status("three"))),
-        trackDAO.name,
-
     )
 
     private val mockTrackRepository = mockk<TrackRepository>() {
