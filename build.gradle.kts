@@ -26,7 +26,6 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("redis.clients:jedis:5.0.2")
-    implementation("org.testcontainers:testcontainers:1.19.3")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:0.41.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
@@ -36,7 +35,14 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:0.45.0")
     implementation("io.ktor:ktor-server-content-negotiation:0.41.1")
     implementation("org.postgresql:postgresql:42.6.0")
+    implementation("io.ktor:ktor-client-cio-jvm:2.3.6")
+
+    testImplementation("io.ktor:ktor-client-content-negotiation")
+    testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.testcontainers:testcontainers:1.19.3")
+    testImplementation("org.testcontainers:postgresql:1.19.3")
+    testImplementation("com.redis:testcontainers-redis:2.0.1")
 }

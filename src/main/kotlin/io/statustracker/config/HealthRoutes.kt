@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 fun Application.healthRoutes() {
     routing {
         get("/") {
+            DatabaseFactory.dbQuery { "select 1;" }
             call.respondText("Ok")
         }
     }
