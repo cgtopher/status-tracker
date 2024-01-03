@@ -3,18 +3,16 @@ package io.statustracker.config
 import com.redis.testcontainers.RedisContainer
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import io.statustracker.module
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
-import java.util.UUID
 
 object IntegrationTest {
-    val postgres: PostgreSQLContainer<Nothing> = PostgreSQLContainer("postgres:latest")
-    val redis: RedisContainer = RedisContainer(DockerImageName.parse("redis:6.2.6"))
+    val postgres: PostgreSQLContainer<Nothing> = PostgreSQLContainer("postgres:16.1")
+    val redis: RedisContainer = RedisContainer(DockerImageName.parse("redis:7.2.3"))
 
     init {
         postgres.start()
@@ -42,9 +40,6 @@ fun integrationTest(block: suspend ApplicationTestBuilder.(client: HttpClient) -
                 json()
             }
         }
-
-        client.get("trackables/${UUID.randomUUID()}")
-
 
         block(client)
     }
